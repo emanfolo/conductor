@@ -1,0 +1,12 @@
+{
+    "name": "task-executor",
+    "version": "1.0.0",
+    "scripts": {
+        "generate-types": "node scripts/generate-types.js"
+    },
+    "devDependencies": {
+        "@openapitools/openapi-generator-cli": "^2.7.0",
+        "glob": "^10.3.10",
+        "openapi-typescript-codegen": "^0.29.0"
+    }
+}

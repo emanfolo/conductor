@@ -3,6 +3,10 @@ Cargo.lock
 .env
 .DS_Store
 node_modules
+package-lock.json
+
+# Generated files
+openapitools.json
 
 # Added by cargo
 #
