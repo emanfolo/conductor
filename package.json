@@ -2,15 +2,11 @@
     "name": "task-executor",
     "version": "1.0.0",
     "scripts": {
-        "generate-types": "node scripts/generate-types.js",
         "prepare": "husky install"
     },
     "devDependencies": {
-        "@openapitools/openapi-generator-cli": "^2.7.0",
-        "glob": "^10.3.10",
         "husky": "^9.1.7",
         "lint-staged": "^15.2.11",
-        "openapi-typescript-codegen": "^0.29.0",
         "prettier": "^3.4.2"
     },
     "lint-staged": {
