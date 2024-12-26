@@ -1,9 +1,10 @@
 use axum::{routing::get, Router, Json};
 use serde::Serialize;
 use std::net::SocketAddr;
-use crate::types::prime_calculation::{PrimeCalculationRequest, PrimeCalculationMetrics, PrimeProgress};
 
 pub mod types;
+pub mod tasks;
+pub mod executor;
 
 #[derive(Serialize)]
 struct HelloResponse {

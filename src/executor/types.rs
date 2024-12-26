@@ -11,3 +11,9 @@ pub enum TaskState {
 pub struct TaskError {
     message: String,
 }
+
+#[derive(Debug)]
+pub struct TaskResponse {
+    pub task_id: String,
+    pub state: TaskState,
+}

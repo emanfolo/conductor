@@ -6,7 +6,7 @@ pub struct PrimeCalculationRequest {
     pub batch_size: Option<u32>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PrimeCalculationMetrics {
     pub total_time_ms: u64,
     pub max_memory_bytes: u64,
