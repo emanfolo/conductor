@@ -34,6 +34,15 @@ impl TaskExecutor {
         Ok(())
     }
 
+    pub async fn store_failure(
+        &self, 
+        task_id: Uuid,
+    ) -> Result<(), TaskError> {
+        let mut tasks = self.tasks.write().await;
+        tasks.insert(task_id, TaskState::Failed("Task failed with error message".to_string()));
+        Ok(())
+    }
+
     pub async fn get_task_state(&self, task_id: &Uuid) -> Option<TaskState> {
         let tasks = self.tasks.read().await;
         tasks.get(task_id).cloned()

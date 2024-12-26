@@ -1,16 +1,17 @@
 use std::sync::Arc;
 
-use axum::{extract::State, Json};
+use axum::{extract::State, Json, http::StatusCode};
 use tokio::sync::mpsc;
 use uuid::Uuid;
 
-use crate::{executor::{task_executor::TaskExecutor, TaskResponse, TaskState}, types::{prime_calculation::PrimeCalculationRequest, requests::StatusCode}};
+use crate::{executor::{task_executor::TaskExecutor, TaskResponse, TaskState}, types::prime_calculation::PrimeCalculationRequest};
 
 use super::calculator::PrimeCalculator;
 
+#[axum::debug_handler]
 pub async fn create_prime_task(
-    Json(input): Json<PrimeCalculationRequest>,
     State(task_executor): State<Arc<TaskExecutor>>,
+    Json(input): Json<PrimeCalculationRequest>,
 ) -> Result<Json<TaskResponse>, StatusCode> {
     let (progress_tx, _progress_rx) = mpsc::channel(32);
 
@@ -32,6 +33,7 @@ pub async fn create_prime_task(
                     }
                 }
                 Err(e) => {
+                        let _ = executor.store_failure(task_id).await;
                         eprintln!("Failed to execute task with error: {:?}", e);
                 }
             }

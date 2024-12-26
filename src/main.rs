@@ -1,6 +1,8 @@
-use axum::{routing::get, Router, Json};
+use axum::{routing::{get, post}, Json, Router};
+use executor::task_executor::TaskExecutor;
 use serde::Serialize;
-use std::net::SocketAddr;
+use tasks::prime_calculator::handler::create_prime_task;
+use std::{net::SocketAddr, sync::Arc};
 
 pub mod types;
 pub mod tasks;
@@ -24,7 +26,13 @@ async fn health() -> Json<HelloResponse> {
 
 #[tokio::main]
 async fn main() {
-    let app = Router::new().route("/health", get(health));
+    let task_executor = Arc::new(TaskExecutor::new());
+
+
+    let app = Router::new()
+        .route("/health", get(health))
+        .route("/api/prime", post(create_prime_task))
+        .with_state(task_executor);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 5001));
 
