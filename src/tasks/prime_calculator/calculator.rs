@@ -44,6 +44,7 @@ impl PrimeCalculator {
     }
 
     pub async fn calculate(&self) -> Result<PrimeCalculationCompletedMetrics, String> {
+        println!("Starting calculation for upper_bound: {}", self.upper_bound);
         let start_time = Instant::now();
         let mut primes = Vec::new();
         let mut numbers_checked = 0u64;
@@ -72,9 +73,8 @@ impl PrimeCalculator {
                     elapsed_time_ms: start_time.elapsed().as_millis() as u64,
                 };
 
-                if let Err(e) = self.progress_sender.send(progress).await {
-                    return Err(format!("Failed to send progress: {}", e));
-                }
+                let _ = self.progress_sender.send(progress).await;
+
                 last_progress_update = Instant::now();
             }
 
@@ -86,13 +86,13 @@ impl PrimeCalculator {
         let max_memory_bytes = primes.capacity() as u64 * std::mem::size_of::<u64>() as u64;
         
         let metrics = PrimeCalculationCompletedMetrics {
-            found_primes: primes,
+            found_primes: primes.len() as u32,
             total_time_ms: total_time.as_millis() as u64,
             max_memory_bytes,
             numbers_checked,
             average_check_time_ns: total_time.as_nanos() as f64 / numbers_checked as f64,
         };
-
+        println!("Calculation complete");
         Ok(metrics)
     }
 }

@@ -8,7 +8,7 @@ pub struct PrimeCalculationRequest {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PrimeCalculationCompletedMetrics {
-    pub found_primes: Vec<u64>,
+    pub found_primes: u32,
     pub total_time_ms: u64,
     pub max_memory_bytes: u64,
     pub numbers_checked: u64,
