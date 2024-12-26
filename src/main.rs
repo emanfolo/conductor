@@ -7,6 +7,8 @@ use std::{net::SocketAddr, sync::Arc};
 pub mod types;
 pub mod tasks;
 pub mod executor;
+pub mod api;
+pub mod streaming;
 
 #[derive(Serialize)]
 struct HelloResponse {
