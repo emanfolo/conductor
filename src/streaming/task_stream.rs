@@ -31,7 +31,7 @@ impl TaskStateStream {
             }
         })
         .then(|future| future)
-        .throttle(Duration::from_secs(1))
+        .throttle(Duration::from_millis(100))
     }
 }
 
