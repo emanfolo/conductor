@@ -4,7 +4,7 @@ use tokio::sync::RwLock;
 use uuid::Uuid;
 
 
-use crate::{executor::{TaskState, TaskError}, types::prime_calculation::PrimeCalculationMetrics};
+use crate::executor::{TaskState, TaskError, CompletedMetrics, ProgressMetrics};
 
 pub struct TaskExecutor {
     tasks: Arc<RwLock<HashMap<Uuid, TaskState>>>,
@@ -17,20 +17,19 @@ impl TaskExecutor {
         }
     }
 
-    pub async fn register_task(&self, task_id: Uuid) -> Result<(), TaskError> {
+    pub async fn register_task(&self, task_id: Uuid, metrics: ProgressMetrics) -> Result<(), TaskError> {
         let mut tasks = self.tasks.write().await;
-        tasks.insert(task_id, TaskState::Running);
+        tasks.insert(task_id, TaskState::Running(metrics));
         Ok(())
     }
 
     pub async fn store_result(
         &self, 
         task_id: Uuid, 
-        primes: Vec<u64>, 
-        metrics: PrimeCalculationMetrics
+        metrics: CompletedMetrics
     ) -> Result<(), TaskError> {
         let mut tasks = self.tasks.write().await;
-        tasks.insert(task_id, TaskState::Completed(primes, metrics));
+        tasks.insert(task_id, TaskState::Completed(metrics));
         Ok(())
     }
 

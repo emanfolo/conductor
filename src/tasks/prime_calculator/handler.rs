@@ -4,7 +4,7 @@ use axum::{extract::State, Json, http::StatusCode};
 use tokio::sync::mpsc;
 use uuid::Uuid;
 
-use crate::{executor::{task_executor::TaskExecutor, TaskResponse, TaskState}, types::prime_calculation::PrimeCalculationRequest};
+use crate::{executor::{task_executor::TaskExecutor, CompletedMetrics, ProgressMetrics, TaskResponse, TaskState}, types::prime_calculation::{PrimeCalculationProgressMetrics, PrimeCalculationRequest}};
 
 use super::calculator::PrimeCalculator;
 
@@ -27,8 +27,8 @@ pub async fn create_prime_task(
         let executor = task_executor.clone();
         async move {
             match calculator.calculate().await {
-                Ok((primes, metrics)) => {
-                    if let Err(e) = executor.store_result(task_id, primes, metrics).await {
+                Ok(metrics) => {
+                    if let Err(e) = executor.store_result(task_id, CompletedMetrics::PrimeCalculationMetrics(metrics)).await {
                         eprintln!("Failed to store result: {:?}", e);
                     }
                 }
@@ -42,6 +42,14 @@ pub async fn create_prime_task(
 
     Ok(Json(TaskResponse {
         task_id: task_id.to_string(),
-        state: TaskState::Running,
+        state: TaskState::Running(
+            ProgressMetrics::PrimeCalculationMetrics(PrimeCalculationProgressMetrics {
+                current_number: 0,
+                found_primes: 0,
+                percentage_complete: 0.0,
+                current_memory_usage: 0,
+                elapsed_time_ms: 0,
+            })
+        ),
     }))
 }

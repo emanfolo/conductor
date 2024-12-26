@@ -1,18 +1,18 @@
 use std::time::{Instant, Duration};
 use tokio::sync::mpsc;
-use crate::types::prime_calculation::{PrimeCalculationMetrics, PrimeProgress};
+use crate::types::prime_calculation::{PrimeCalculationCompletedMetrics, PrimeCalculationProgressMetrics};
 
 pub struct PrimeCalculator {
     upper_bound: u64,
     batch_size: u32,
-    progress_sender: mpsc::Sender<PrimeProgress>,
+    progress_sender: mpsc::Sender<PrimeCalculationProgressMetrics>,
 }
 
 impl PrimeCalculator {
     pub fn new(
         upper_bound: u64, 
         batch_size: u32,
-        progress_sender: mpsc::Sender<PrimeProgress>
+        progress_sender: mpsc::Sender<PrimeCalculationProgressMetrics>
     ) -> Self {
         Self {
             upper_bound,
@@ -43,7 +43,7 @@ impl PrimeCalculator {
         true
     }
 
-    pub async fn calculate(&self) -> Result<(Vec<u64>, PrimeCalculationMetrics), String> {
+    pub async fn calculate(&self) -> Result<PrimeCalculationCompletedMetrics, String> {
         let start_time = Instant::now();
         let mut primes = Vec::new();
         let mut numbers_checked = 0u64;
@@ -64,7 +64,7 @@ impl PrimeCalculator {
             if numbers_checked % self.batch_size as u64 == 0 
                 || last_progress_update.elapsed() >= Duration::from_secs(1) 
             {
-                let progress = PrimeProgress {
+                let progress = PrimeCalculationProgressMetrics {
                     current_number: current,
                     found_primes: primes.len() as u32,
                     percentage_complete: (current as f32 / self.upper_bound as f32) * 100.0,
@@ -82,14 +82,17 @@ impl PrimeCalculator {
         }
 
         let total_time = start_time.elapsed();
+
+        let max_memory_bytes = primes.capacity() as u64 * std::mem::size_of::<u64>() as u64;
         
-        let metrics = PrimeCalculationMetrics {
+        let metrics = PrimeCalculationCompletedMetrics {
+            found_primes: primes,
             total_time_ms: total_time.as_millis() as u64,
-            max_memory_bytes: primes.capacity() as u64 * std::mem::size_of::<u64>() as u64,
+            max_memory_bytes,
             numbers_checked,
             average_check_time_ns: total_time.as_nanos() as f64 / numbers_checked as f64,
         };
 
-        Ok((primes, metrics))
+        Ok(metrics)
     }
 }
