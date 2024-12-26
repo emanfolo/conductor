@@ -1,15 +1,25 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::prime_calculation::PrimeCalculationMetrics;
+use crate::types::prime_calculation::{PrimeCalculationCompletedMetrics, PrimeCalculationProgressMetrics};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum ProgressMetrics {
+    PrimeCalculationMetrics(PrimeCalculationProgressMetrics)
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum CompletedMetrics {
+    PrimeCalculationMetrics(PrimeCalculationCompletedMetrics)
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TaskState {
-    Running,
-    Completed(Vec<u64>, PrimeCalculationMetrics),
+    Running(ProgressMetrics),
+    Completed(CompletedMetrics),
     Failed(String),
 }
 
-#[derive(Debug,)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct TaskError {
     message: String,
 }

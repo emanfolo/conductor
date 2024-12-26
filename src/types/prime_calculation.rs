@@ -7,15 +7,16 @@ pub struct PrimeCalculationRequest {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct PrimeCalculationMetrics {
+pub struct PrimeCalculationCompletedMetrics {
+    pub found_primes: Vec<u64>,
     pub total_time_ms: u64,
     pub max_memory_bytes: u64,
     pub numbers_checked: u64,
     pub average_check_time_ns: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct PrimeProgress {
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PrimeCalculationProgressMetrics {
     pub current_number: u64,
     pub found_primes: u32,
     pub percentage_complete: f32,
