@@ -1,7 +1,7 @@
 use axum::{routing::{get, post}, Json, Router};
 use executor::task_executor::TaskExecutor;
 use serde::Serialize;
-use streaming::task_stream::stream_task_state;
+use streaming::task_stream::stream_all_tasks;
 use tasks::prime_calculator::handler::create_prime_task;
 use std::{net::SocketAddr, sync::Arc};
 
@@ -35,7 +35,7 @@ async fn main() {
     let app = Router::new()
         .route("/health", get(health))
         .route("/api/prime", post(create_prime_task))
-        .route("/api/tasks/:task_id/stream", get(stream_task_state))
+        .route("/api/stream", get(stream_all_tasks))
         .with_state(task_executor);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 5001));

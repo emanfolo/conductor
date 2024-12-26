@@ -42,8 +42,8 @@ impl TaskExecutor {
         Ok(())
     }
 
-    pub async fn get_task_state(&self, task_id: &Uuid) -> Option<TaskState> {
+    pub async fn get_all_tasks(&self) -> HashMap<Uuid, TaskState> {
         let tasks = self.tasks.read().await;
-        tasks.get(task_id).cloned()
+        tasks.clone()
     }
 }
