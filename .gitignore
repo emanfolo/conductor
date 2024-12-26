@@ -1,15 +1,13 @@
+# Rust
 /target
 Cargo.lock
 .env
 .DS_Store
-node_modules
+# Node/frontend
+/frontend/node_modules
+/node_modules
+/frontend/package-lock.json
 package-lock.json
 
-# Generated files
-openapitools.json
-
-# Added by cargo
-#
-# already existing elements were commented out
-
-#/target
+# JS Builds
+/frontend/dist

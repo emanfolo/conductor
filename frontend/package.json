@@ -1,0 +1,12 @@
+{
+    "name": "conductor-frontend",
+    "version": "1.0.0",
+    "devDependencies": {
+        "typescript": "^5.0.0",
+        "prettier": "^3.4.2"
+    },
+    "scripts": {
+        "dev": "your-dev-script",
+        "build": "your-build-script"
+    }
+}
