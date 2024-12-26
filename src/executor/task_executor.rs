@@ -29,7 +29,18 @@ impl TaskExecutor {
         metrics: CompletedMetrics
     ) -> Result<(), TaskError> {
         let mut tasks = self.tasks.write().await;
+        println!("Storing result for task: {}", task_id);
         tasks.insert(task_id, TaskState::Completed(metrics));
+        Ok(())
+    }
+
+    pub async fn update_progress(
+        &self,
+        task_id: Uuid,
+        metrics: ProgressMetrics,
+    ) -> Result<(), TaskError> {
+        let mut tasks = self.tasks.write().await;
+        tasks.insert(task_id, TaskState::Running(metrics));
         Ok(())
     }
 

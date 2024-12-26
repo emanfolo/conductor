@@ -13,7 +13,7 @@ pub async fn create_prime_task(
     State(task_executor): State<Arc<TaskExecutor>>,
     Json(input): Json<PrimeCalculationRequest>,
 ) -> Result<Json<TaskResponse>, StatusCode> {
-    let (progress_tx, _progress_rx) = mpsc::channel(32);
+    let (progress_tx, progress_rx) = mpsc::channel(32);
 
     let task_id = Uuid::new_v4();
 
@@ -25,7 +25,18 @@ pub async fn create_prime_task(
     
     tokio::spawn({
         let executor = task_executor.clone();
+        let mut progress_rx = progress_rx;
         async move {
+            // Progress updates
+            let progress_handler = tokio::spawn({
+                let executor = executor.clone();
+                async move {
+                    while let Some(progress) = progress_rx.recv().await {
+                        let _ = executor.update_progress(task_id, ProgressMetrics::PrimeCalculationMetrics(progress)).await;
+                    }
+                }
+            });
+
             match calculator.calculate().await {
                 Ok(metrics) => {
                     if let Err(e) = executor.store_result(task_id, CompletedMetrics::PrimeCalculationMetrics(metrics)).await {
@@ -37,6 +48,7 @@ pub async fn create_prime_task(
                         eprintln!("Failed to execute task with error: {:?}", e);
                 }
             }
+            progress_handler.abort();
         }
      });
 
