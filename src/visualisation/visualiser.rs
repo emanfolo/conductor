@@ -3,9 +3,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use crate::types::visualisation::{ComputationProgress, Point, VisualAttributes, VisualElement, VisualisationFrame};
 
 
-pub struct ComputationVisualiser {
-    progress: ComputationProgress
-}
+pub struct ComputationVisualiser;
 
 impl ComputationVisualiser {
     pub fn generate_frame(&self, progress: &ComputationProgress) -> VisualisationFrame {

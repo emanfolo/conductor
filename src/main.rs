@@ -1,9 +1,10 @@
-use axum::{response::{Html, IntoResponse}, routing::{get, post}, Json, Router};
+use axum::{http::{HeaderValue, Method}, response::{Html, IntoResponse}, routing::{get, post}, Json, Router};
 use executor::task_executor::TaskExecutor;
 use serde::Serialize;
 use streaming::task_stream::stream_all_tasks;
 use tasks::prime_calculator::handler::create_prime_task;
 use tower_http::services::ServeDir;
+use tower_http::cors::{CorsLayer, Any};
 use std::{net::SocketAddr, sync::Arc};
 
 pub mod types;
@@ -33,6 +34,10 @@ async fn health() -> Json<HelloResponse> {
 async fn main() {
     let task_executor = Arc::new(TaskExecutor::new());
 
+    let cors = CorsLayer::new()
+        .allow_origin("http://localhost:5173".parse::<HeaderValue>().unwrap())
+        .allow_methods([Method::GET, Method::POST])
+        .allow_headers(Any);
 
     let app = Router::new()
         .route("/api/health", get(health))
@@ -40,6 +45,7 @@ async fn main() {
         .route("/api/stream", get(stream_all_tasks))
         .route("/visual-test", get(serve_visual_test))
         .nest_service("/", ServeDir::new("static"))
+        .layer(cors)
         .with_state(task_executor);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 5001));

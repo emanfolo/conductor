@@ -14,13 +14,13 @@ pub enum CompletedMetrics {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TaskProgress {
     pub metrics: ProgressMetrics,
-    pub visualization: Option<Vec<VisualisationFrame>>,
+    pub visualisation: Option<Vec<VisualisationFrame>>,
     pub timestamp: u64,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TaskCompletion {
     pub metrics: CompletedMetrics,
-    pub visualization: Vec<VisualisationFrame>,
+    pub visualisation: Vec<VisualisationFrame>,
     pub timestamp: u64,
 }
 

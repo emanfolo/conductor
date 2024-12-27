@@ -31,7 +31,7 @@ pub async fn create_prime_task(
             current_memory_usage: 0,
             elapsed_time_ms: 0,
         }),
-        visualization: None,
+        visualisation: None,
         timestamp: 0,
     };
 
@@ -48,7 +48,7 @@ pub async fn create_prime_task(
                     while let Some(progress) = progress_rx.recv().await {
                         let progress_update = TaskProgress {
                             metrics: ProgressMetrics::PrimeCalculationMetrics(progress),
-                            visualization: None,  // or generate visualization
+                            visualisation: None,  // or generate visualization
                             timestamp: std::time::SystemTime::now()
                                 .duration_since(std::time::UNIX_EPOCH)
                                 .unwrap()
@@ -63,7 +63,7 @@ pub async fn create_prime_task(
                 Ok(metrics) => {
                     let completion = TaskCompletion {
                         metrics: CompletedMetrics::PrimeCalculationMetrics(metrics),
-                        visualization: Vec::new(), // or collect visualization frames if you have them
+                        visualisation: Vec::new(), // or collect visualization frames if you have them
                         timestamp: std::time::SystemTime::now()
                             .duration_since(std::time::UNIX_EPOCH)
                             .unwrap()

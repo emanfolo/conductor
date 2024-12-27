@@ -4,7 +4,7 @@ use tokio::sync::RwLock;
 use uuid::Uuid;
 
 
-use crate::executor::{TaskState, TaskError, CompletedMetrics, ProgressMetrics};
+use crate::executor::{TaskState, TaskError};
 
 use super::{TaskCompletion, TaskProgress};
 
