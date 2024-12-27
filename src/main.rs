@@ -3,6 +3,7 @@ use executor::task_executor::TaskExecutor;
 use serde::Serialize;
 use streaming::task_stream::stream_all_tasks;
 use tasks::prime_calculator::handler::create_prime_task;
+use tower_http::services::ServeDir;
 use std::{net::SocketAddr, sync::Arc};
 
 pub mod types;
@@ -34,13 +35,14 @@ async fn main() {
 
 
     let app = Router::new()
-        .route("/health", get(health))
+        .route("/api/health", get(health))
         .route("/api/prime", post(create_prime_task))
         .route("/api/stream", get(stream_all_tasks))
         .route("/visual-test", get(serve_visual_test))
+        .nest_service("/", ServeDir::new("static"))
         .with_state(task_executor);
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 5001));
+    let addr = SocketAddr::from(([0, 0, 0, 0], 5001));
 
     println!("Server running on {}", addr);
     axum::serve(

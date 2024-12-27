@@ -3,6 +3,7 @@
 Cargo.lock
 .env
 .DS_Store
+
 # Node/frontend
 /frontend/node_modules
 /node_modules
@@ -10,4 +11,4 @@ Cargo.lock
 package-lock.json
 
 # JS Builds
-/frontend/dist
+/dist
