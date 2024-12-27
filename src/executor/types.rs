@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::prime_calculation::{PrimeCalculationCompletedMetrics, PrimeCalculationProgressMetrics};
+use crate::types::{prime_calculation::{PrimeCalculationCompletedMetrics, PrimeCalculationProgressMetrics}, visualisation::VisualisationFrame};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ProgressMetrics {
@@ -11,11 +11,23 @@ pub enum ProgressMetrics {
 pub enum CompletedMetrics {
     PrimeCalculationMetrics(PrimeCalculationCompletedMetrics)
 }
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TaskProgress {
+    pub metrics: ProgressMetrics,
+    pub visualization: Option<Vec<VisualisationFrame>>,
+    pub timestamp: u64,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TaskCompletion {
+    pub metrics: CompletedMetrics,
+    pub visualization: Vec<VisualisationFrame>,
+    pub timestamp: u64,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TaskState {
-    Running(ProgressMetrics),
-    Completed(CompletedMetrics),
+    Running(TaskProgress),
+    Completed(TaskCompletion),
     Failed(String),
 }
 
