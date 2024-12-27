@@ -3,10 +3,11 @@
     "version": "1.0.0",
     "devDependencies": {
         "typescript": "^5.0.0",
-        "prettier": "^3.4.2"
+        "prettier": "^3.4.2",
+        "vite": "^5.0.0"
     },
     "scripts": {
-        "dev": "your-dev-script",
-        "build": "your-build-script"
+        "dev": "vite",
+        "build": "vite build"
     }
 }

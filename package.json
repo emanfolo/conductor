@@ -2,5 +2,18 @@
     "name": "conductor",
     "version": "1.0.0",
     "private": true,
-    "workspaces": ["frontend"]
+    "workspaces": [
+        "frontend"
+    ],
+    "scripts": {
+        "dev:fe": "npm run dev -w frontend",
+        "dev:be": "cargo run",
+        "dev": "concurrently \"npm run dev:fe\" \"npm run dev:be\"",
+        "build:fe": "npm run build -w frontend",
+        "build": "rm -rf dist && mkdir -p dist/static/js && npm run build:fe && cp frontend/dist/main.js dist/static/js/ && cp frontend/public/html/index.html dist/static/ && cargo build --release",
+        "start": "./target/release/conductor"
+    },
+    "devDependencies": {
+        "concurrently": "^9.1.1"
+    }
 }
